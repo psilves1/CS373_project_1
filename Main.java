@@ -46,7 +46,49 @@ public class Main {
             tkn = inFile.next();
         }
 
+        while(tkn.equals("transition")){
+            //System.out.println(inFile.next());
+            int originalStateNum = inFile.nextInt();
+            String transition = inFile.next();
+            int newStateNum = inFile.nextInt();
 
+            /*
+            List of things we need to do here:
+            1) Make sure originalStateNum exists in listOfStates. If not add it
+            2) Make sure newStateNum exists in listOfStates. If not add it
+            3) Create transition object
+            4) Add transition object to the orignalState in the listOfStates
+            5) Add newState to listOfStates the transition contains
+             */
+            generateIfNotExist(originalStateNum, listOfStates);
+            State s = generateIfNotExist(newStateNum, listOfStates);
+
+            for(int i = 0; i < listOfStates.size(); i++){
+                if(listOfStates.get(i).getNumber() == originalStateNum){
+                    listOfStates.get(i).setValidTransitions(new Transition(transition, s));
+                }
+            }
+
+            if(!inFile.hasNext()){
+                break;
+            }
+            tkn = inFile.next();
+        }
+    }
+    //Generates a state if it does not exist
+    static State generateIfNotExist(int n, List<State> listOfStates){
+        for(int i = 0; i < listOfStates.size(); i++) {
+            if (listOfStates.get(i).getNumber() == n) {
+                return listOfStates.get(i);
+            }
+        }
+        listOfStates.add(new State(n, false, false));
+        for(int i = 0; i < listOfStates.size(); i++) {
+            if (listOfStates.get(i).getNumber() == n) {
+                return listOfStates.get(i);
+            }
+        }
+        return listOfStates.get(0);
     }
 }
 
@@ -92,15 +134,27 @@ class State{
 
 class Transition{
 
-    private List<State> listOfStates;
+    private State endState;
     private String value;
 
-    public Transition(String value){
-        this.listOfStates = new ArrayList<>();
+    public Transition(String value, State endState){
+        this.endState = endState;
         this.value = value;
     }
 
-    public List getListOfStates(){
-        return listOfStates;
+    public State getEndState() {
+        return endState;
+    }
+
+    public void setEndState(State endState) {
+        this.endState = endState;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }
