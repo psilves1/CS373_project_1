@@ -74,24 +74,8 @@ public class Main {
             }
             tkn = inFile.next();
         }
-        /*
-        for(int i = 0; i < listOfStates.size(); i++){
-            System.out.println(listOfStates.get(i).getNumber());
-            listOfStates.get(i).printTransitions();
-            System.out.println("");
-        }
-         */
 
-        //TODO
-        //I have the FA built, now I just need to read the string in and follow its path
-
-        //file = new File(arg[1]);
-        //inFile = new Scanner(file);
-
-        //This reads in the string and turns it into a char array
-        //tkn = inFile.next();
         tkn = arg[1];
-
 
         List<CurrentState> listOfIterations = new ArrayList<>();
 
@@ -102,23 +86,14 @@ public class Main {
             }
         }
 
-        /*
-        for (int i = 0; i < listOfStates.size(); i++) {
-            System.out.println(listOfStates.get(i).getNumber());
-            listOfStates.get(i).printTransitions();
-        }
-         */
-
         List<State> reachedAcceptStates = new ArrayList<>();
         List<State> rejectedStates = new ArrayList<>();
-
 
         while(listOfIterations.size() != 0){
 
             List<State> branches = listOfIterations.get(0).transition();
 
             if(branches == null){
-                //System.out.println(listOfIterations.get(0).getCurrentState().getNumber());
                 if(listOfIterations.get(0).getCurrentState().isAcceptState()){
                     reachedAcceptStates.add(listOfIterations.get(0).getCurrentState());
                 }
@@ -127,9 +102,6 @@ public class Main {
                 }
                 listOfIterations.remove(0);
                 continue;
-            }
-            if(branches.size() == 1){
-                //System.out.println("branches == 1");
             }
             if(branches.size() > 1){
                 //System.out.println("branches > 1");
@@ -140,8 +112,6 @@ public class Main {
             }
 
         }
-
-        //System.out.println(reachedAcceptStates.size());
 
         if(reachedAcceptStates.size() > 0) {
             List<State> noDuplicates = new ArrayList<>();
@@ -170,8 +140,6 @@ public class Main {
                 System.out.print(" ");
             }
         }
-
-
 
     }
 
@@ -221,15 +189,6 @@ class State{
         return list;
     }
 
-    public void printTransitions(){
-        for(int i = 0; i < validTransitions.size(); i++){
-            System.out.println(validTransitions.get(i).getValue());
-            System.out.println("is the transition value to go to: ");
-            System.out.println(validTransitions.get(i).getEndState().getNumber());
-            System.out.println("");
-        }
-    }
-
     public int getNumber(){
         return number;
     }
@@ -259,10 +218,6 @@ class CurrentState{
 
     public State getCurrentState(){
         return currState;
-    }
-
-    public void setCurrState(State s){
-        currState = s;
     }
 
     public String getRemainingChars(){
@@ -302,15 +257,8 @@ class Transition{
         return endState;
     }
 
-    public void setEndState(State endState) {
-        this.endState = endState;
-    }
-
     public String getValue() {
         return value;
     }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
 }
