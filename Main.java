@@ -9,7 +9,7 @@ public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
 
-        String[] arg = {"src/sample_1.txt" , "000"};
+        String[] arg = {"src/sample_2.txt" , "0101"};
 
         List<State> listOfStates = new ArrayList<>();
 
@@ -110,6 +110,8 @@ public class Main {
          */
 
         List<State> reachedAcceptStates = new ArrayList<>();
+        List<State> rejectedStates = new ArrayList<>();
+
 
         while(listOfIterations.size() != 0){
 
@@ -119,6 +121,9 @@ public class Main {
                 //System.out.println(listOfIterations.get(0).getCurrentState().getNumber());
                 if(listOfIterations.get(0).getCurrentState().isAcceptState()){
                     reachedAcceptStates.add(listOfIterations.get(0).getCurrentState());
+                }
+                else{
+                    rejectedStates.add(listOfIterations.get(0).getCurrentState());
                 }
                 listOfIterations.remove(0);
                 continue;
@@ -138,12 +143,38 @@ public class Main {
 
         //System.out.println(reachedAcceptStates.size());
 
-        for (int i = 0; i < reachedAcceptStates.size(); i++) {
-            System.out.println(reachedAcceptStates.get(i).getNumber());
+        if(reachedAcceptStates.size() > 0) {
+            List<State> noDuplicates = new ArrayList<>();
+            for(State s: reachedAcceptStates){
+                if(!noDuplicates.contains(s)){
+                    noDuplicates.add(s);
+                }
+            }
+            System.out.print("accept ");
+            for(State s: noDuplicates){
+                System.out.print(s.getNumber());
+                System.out.print(" ");
+            }
+        }
+        else{
+            List<State> noDuplicates = new ArrayList<>();
+            for(State s: rejectedStates){
+                if(!noDuplicates.contains(s)){
+                    noDuplicates.add(s);
+                }
+            }
+            //PRINT REJECTED HERE
+            System.out.print("reject ");
+            for(State s: noDuplicates){
+                System.out.print(s.getNumber());
+                System.out.print(" ");
+            }
         }
 
 
+
     }
+
     //Generates a state if it does not exist
     static State generateIfNotExist(int n, List<State> listOfStates){
         for(int i = 0; i < listOfStates.size(); i++) {
