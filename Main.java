@@ -74,6 +74,75 @@ public class Main {
             }
             tkn = inFile.next();
         }
+        /*
+        for(int i = 0; i < listOfStates.size(); i++){
+            System.out.println(listOfStates.get(i).getNumber());
+            listOfStates.get(i).printTransitions();
+            System.out.println("");
+        }
+         */
+
+        //TODO
+        //I have the FA built, now I just need to read the string in and follow its path
+
+        //file = new File(arg[1]);
+        //inFile = new Scanner(file);
+
+        //This reads in the string and turns it into a char array
+        //tkn = inFile.next();
+        tkn = arg[1];
+
+
+        List<CurrentState> listOfIterations = new ArrayList<>();
+
+        //adds all start states to list of iterations
+        for (int i = 0; i < listOfStates.size(); i++) {
+            if (listOfStates.get(i).isStartState()){
+                listOfIterations.add(new CurrentState(listOfStates.get(i), tkn));
+            }
+        }
+
+        /*
+        for (int i = 0; i < listOfStates.size(); i++) {
+            System.out.println(listOfStates.get(i).getNumber());
+            listOfStates.get(i).printTransitions();
+        }
+         */
+
+        List<State> reachedAcceptStates = new ArrayList<>();
+
+        while(listOfIterations.size() != 0){
+
+            List<State> branches = listOfIterations.get(0).transition();
+
+            if(branches == null){
+                //System.out.println(listOfIterations.get(0).getCurrentState().getNumber());
+                if(listOfIterations.get(0).getCurrentState().isAcceptState()){
+                    reachedAcceptStates.add(listOfIterations.get(0).getCurrentState());
+                }
+                listOfIterations.remove(0);
+                continue;
+            }
+            if(branches.size() == 1){
+                //System.out.println("branches == 1");
+            }
+            if(branches.size() > 1){
+                //System.out.println("branches > 1");
+                for (int i = 1; i < branches.size(); i++) {
+                    listOfIterations.add(new CurrentState(branches.get(i),
+                            listOfIterations.get(0).getRemainingChars()));
+                }
+            }
+
+        }
+
+        //System.out.println(reachedAcceptStates.size());
+
+        for (int i = 0; i < reachedAcceptStates.size(); i++) {
+            System.out.println(reachedAcceptStates.get(i).getNumber());
+        }
+
+
     }
     //Generates a state if it does not exist
     static State generateIfNotExist(int n, List<State> listOfStates){
@@ -111,8 +180,23 @@ class State{
         validTransitions.add(t);
     }
 
-    public boolean isReachable(Transition t){
-        return validTransitions.contains(t);
+    public List<State> transition(String str){
+        List<State> list = new ArrayList<>();
+        for (int i = 0; i < validTransitions.size(); i++) {
+            if(validTransitions.get(i).getValue().equals(str)){
+                list.add(validTransitions.get(i).getEndState());
+            }
+        }
+        return list;
+    }
+
+    public void printTransitions(){
+        for(int i = 0; i < validTransitions.size(); i++){
+            System.out.println(validTransitions.get(i).getValue());
+            System.out.println("is the transition value to go to: ");
+            System.out.println(validTransitions.get(i).getEndState().getNumber());
+            System.out.println("");
+        }
     }
 
     public int getNumber(){
@@ -129,6 +213,47 @@ class State{
 
     public void setAccept(boolean b) {
         isAcceptState = b;
+    }
+}
+
+class CurrentState{
+
+    private State currState;
+    String remainingChars;
+
+    public CurrentState(State s, String remainingChars){
+        this.currState = s;
+        this.remainingChars = remainingChars;
+    }
+
+    public State getCurrentState(){
+        return currState;
+    }
+
+    public void setCurrState(State s){
+        currState = s;
+    }
+
+    public String getRemainingChars(){
+        return remainingChars;
+    }
+
+    public List<State> transition(){
+
+        if(remainingChars.length() == 0){
+            return null;
+        }
+
+        List<State> list = currState.transition(remainingChars.substring(0,1));
+
+        if(list.size() == 0) {
+            currState = null;
+        }
+        else{
+            currState = list.get(0);
+        }
+        remainingChars = remainingChars.substring(1);
+        return list;
     }
 }
 
